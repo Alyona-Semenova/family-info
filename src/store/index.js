@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     user: {
       name: '',
-      age: '',
+      age: 0,
       children: {},
     } 
   },

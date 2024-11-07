@@ -3,20 +3,38 @@
     <div class="form-view__personal-info">
       <div class="form-view__title">Персональные данные</div>
       <div class="form-view__content">
-        <InputComponent :inputName="'Имя'" :inputValue="userInfo.name" @input="updateName" />
-        <InputComponent :inputName="'Возраст'" :inputValue="userInfo.age" @input="updateAge" />
+        <InputComponent  
+          :type="'text'"  
+          :inputName="'Имя'" 
+          :inputValue="userInfo.name" 
+          @input="updateName" />
+        <InputComponent 
+          :type="'number'"  
+          :inputName="'Возраст'" 
+          :inputValue="userInfo.age" 
+          @input="updateAge" />
       </div>
     </div>
 
     <div class="form-view__kids-info">
       <div class="form-view__title form-view__title_with-button">Дети (макс.5) 
-        <button class="kids-info__add-kid"> <img src="@/assets/plus.svg" alt="add-kid" @click="addChild"/> Добавить ребенка</button>
+        <button v-if="Object.values(userInfo.children).length < 5" 
+          class="kids-info__add-kid" @click="addChild"> 
+          <img src="@/assets/plus.svg" alt="add-kid"/> Добавить ребенка</button>
       </div>
       <div class="kids-info__rows">
         <template v-if="Object.values(userInfo.children).length">
-          <div class="kids-info__row" v-for="(kid, index) in userInfo.children" :key="index"> 
-            <InputComponent :inputName="'Имя'" :inputValue="kid.name" @input="updateKidName($event, index)" />
-            <InputComponent :inputName="'Возраст'" :inputValue="kid.age" @input="updateKidAge($event, index)" />
+          <div class="kids-info__row" v-for="(child, index) in userInfo.children" :key="index"> 
+            <InputComponent 
+              :type="'text'" 
+              :inputName="'Имя'" 
+              :inputValue="child.name" 
+              @input="updateKidName($event, index)" />
+            <InputComponent 
+              :type="'number'" 
+              :inputName="'Возраст'" 
+              :inputValue="child.age" 
+              @input="updateKidAge($event, index)" />
             <div class="kids-info__delete-row" @click="removeChild(index)"> Удалить </div>
           </div>
         </template>
@@ -54,7 +72,7 @@ export default {
   },
 
   created() {
-    this.userInfo = structuredClone(this.user);
+    this.userInfo  = JSON.parse(JSON.stringify(this.user));
   },
 
 
@@ -89,8 +107,13 @@ export default {
      * @param {string} value - новое значение возраста ребенка
      * @param {number} index - ключ
      */
-    updateKidAge(value, index) {
-      this.userInfo.children[index].age = Number(value);
+     updateKidAge(value, index) {
+      const parsedValue = Number(value);
+      if (!isNaN(parsedValue)) {
+        this.userInfo.children[index].age = parsedValue;
+      } else {
+        this.userInfo.children[index].age = ''; // Сбрасываем значение, если оно не числовое
+      }
     },
     
     /**
@@ -100,7 +123,7 @@ export default {
       if (Object.values(this.userInfo.children).length >= 5) {
         alert ('Максимальное количество детей - 5');
         return;
-      }
+      } 
 
       const children = this.userInfo.children || {};
       const lastChildId = Math.max(0, ...Object.keys(children).map(Number)); 
@@ -124,8 +147,30 @@ export default {
      * Сохранение данных
      */
     save() {
+      if (!this.areFieldsValid()) {
+        alert('Пожалуйста, заполните все поля.');
+        return;
+      }
       this.$store.commit('UPDATE_USER', this.userInfo);
-    }
+      alert('Успешно сохранено!');
+    },
+
+
+
+     /**
+     * Проверка заполненности полей
+     */
+     areFieldsValid() {
+      if (!this.userInfo.name || !this.userInfo.age) {
+        return false; 
+      }
+      for (let child of Object.values(this.userInfo.children)) {
+        if (!child.name || !child.age) {
+          return false; 
+        }
+      }
+      return true; 
+    },
 
   }
 }

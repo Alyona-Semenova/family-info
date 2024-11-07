@@ -1,7 +1,7 @@
 <template>
     <div class="input-container">
         <label :class="{ active: isFocused || inputValue.length }" class="placeholder">{{ inputName }}</label>
-        <input type="text" 
+        <input :type="type" 
             :value="inputValue"
             @input="changeValue" 
             @focus="isFocused = true"
@@ -22,6 +22,9 @@ export default {
         },
         inputValue: {
             default: ''
+        },
+        type: {
+            type: String,
         }
     },
 
@@ -73,6 +76,19 @@ export default {
         font-size: 14px;
         font-weight: 400;
         line-height: 24px;
+    }
+
+    // убрать стрелки в input number
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none; 
+    }
+
+    input[type='number'],
+    input[type="number"]:hover,
+    input[type="number"]:focus {
+        appearance: none;
+        -moz-appearance: textfield;
     }
 
 }

@@ -2,13 +2,14 @@
   <div class="preview-view">
     <div class="preview-view__personal-info">
       <div class="preview-view__title">Персональные данные</div>
-      <div class="preview-view__name"> {{ getFullNameAndAge(user.name, user.age)}} </div>
+      <div v-if="user.name && user.age" class="preview-view__name"> {{ getFullNameAndAge(user.name, user.age)}} </div>
+      <div v-else-if="!user.name || !user.age" class="preview-view__name"> Нет данных </div>
     </div>
 
     <div class="preview-view__kids-info kids-info">
       <div class="preview-view__title">Дети</div>
         <div class="kids-info__list"> 
-        <div class="kids-info__item" v-for="(kid, index) in user.children" :key="index">{{ getFullNameAndAge(kid.name, kid.age)}}
+          <div class="kids-info__item" v-for="(kid, index) in user.children" :key="index">{{ getFullNameAndAge(kid.name, kid.age)}}
         </div>
       </div>
     </div>
@@ -18,29 +19,10 @@
 <script>
 export default {
   name: 'PreviewView',
-  data() {
-    return {
-      user: {
-        name: 'Петр',
-        age: 99,
-        children: {
-          1: {
-            id: 1,
-            name: 'Вася',
-            age: 4,
-          },
-          2: {
-            id: 2,
-            name: 'Маша',
-            age: 14,
-          },
-          3: {
-            id: 3,
-            name: 'ДлинноеДлинноеДлинноеДлинноеДлинноеДлинноеДлинноеДлинноеДлинноеДлинное имя',
-            age: 1,
-          },
-        }
-      }
+
+  computed: {
+    user() {
+      return this.$store.state.user;
     }
   },
 
