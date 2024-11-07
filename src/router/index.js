@@ -6,7 +6,7 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/form',
+    path: '/',
     name: 'form',
     component: FormView
   },
