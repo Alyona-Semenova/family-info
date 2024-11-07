@@ -47,7 +47,7 @@ export default {
 
 <style lang="scss" scoped>
 .input-container {
-    margin-top: 20px;
+    // margin-top: 20px;
     padding: 8px 16px;
     display: flex;
     flex-direction: column;
