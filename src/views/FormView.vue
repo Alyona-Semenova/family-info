@@ -12,15 +12,13 @@
       <div class="form-view__title form-view__title_with-button">Дети (макс.5) 
         <button class="kids-info__add-kid"> <img src="@/assets/plus.svg" alt="add-kid" /> Добавить ребенка</button>
       </div>
-    <div class="kids-info__rows">
-      <div class="kids-info__row" v-for="(kid, index) in user.children" :key="index"> 
+      <div class="kids-info__rows">
+        <div class="kids-info__row" v-for="(kid, index) in user.children" :key="index"> 
           <InputComponent :inputName="'Имя'" :inputValue="kid.name" @input="updateKidName($event, index)" />
           <InputComponent :inputName="'Возраст'" :inputValue="kid.age" @input="updateKidAge($event, index)" />
-          <div class="kids-info__delete-row"> Удалить </div>
+        <div class="kids-info__delete-row"> Удалить </div>
       </div>
     </div>
-
-
     </div>
 
     <div class="form-view__save-info">
@@ -60,26 +58,40 @@ export default {
   },
 
   methods: {
+    /**
+     * Обновление имени пользователя
+     * @param {string} value - новое значение имени
+     */
     updateName(value) {
       this.user.name = value;
     },
 
+    /**
+     * Обновление возраста пользователя
+     * @param {string} value - новое значение возраста
+     */
     updateAge(value) {
       this.user.age = Number(value);
     },
     
+    /**
+     * Обновление имени ребенка
+     * @param {string} value - новое значение имени ребенка
+     * @param {number} index - ключ
+     */
     updateKidName(value, index) {
-      console.log(index)
       this.user.children[index].name = value;
     },
 
+    /**
+     * Обновление возраста ребенка
+     * @param {string} value - новое значение возраста ребенка
+     * @param {number} index - ключ
+     */
     updateKidAge(value, index) {
-      console.log(index)
       this.user.children[index].age = Number(value);
     },
-    
   }
-
 }
 </script>
 
