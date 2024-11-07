@@ -1,6 +1,5 @@
 <template>
   <div class="preview-view">
-    <h1>Preview</h1>
   </div>
 </template>
 
@@ -9,3 +8,12 @@ export default {
   name: 'PreviewView',
 }
 </script>
+
+<style lang="scss" scoped>
+.preview-view{
+  width: 100%;
+  height: 100%;
+  background-color: #FFFFFF;
+  width: 45%;
+}
+</style>

@@ -1,28 +1,23 @@
 
 <template>
   <div id="app">
-    <!-- <header class="header"> 
-      <img src="./assets/logo.svg" alt="logo" class="header__logo">
-
-      <nav>
-        <router-link to="/form">Форма</router-link>
-        <router-link to="/preview">Превью</router-link>
-      </nav>
-    </header> -->
-
     <HeaderComponent/>
-
-    <router-view/>
+    <div class="container">
+      <router-view/>
+    </div>
+    <FooterComponent/>
   </div>
 </template>
 
 <script> 
 import HeaderComponent from './components/HeaderComponent.vue';
+import FooterComponent from './components/FooterComponent.vue';
 
 export default {
   name: 'App',
   components: {
     HeaderComponent,
+    FooterComponent,
   }
 }
 </script>
@@ -46,5 +41,10 @@ html, body {
   height: 100%
 }
 
+.container{
+  height: calc(100% - 152px);
+  display: flex;
+  justify-content: center;
+}
 
 </style>

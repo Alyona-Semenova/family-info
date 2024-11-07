@@ -1,6 +1,5 @@
 <template>
   <div class="form-view">
-    <h1>Form</h1>
   </div>
 </template>
 
@@ -9,3 +8,12 @@ export default {
   name: 'FormView',
 }
 </script>
+
+<style lang="scss" scoped>
+.form-view{
+  width: 100%;
+  height: 100%;
+  background-color: #FFFFFF;
+  width: 45%;
+}
+</style>

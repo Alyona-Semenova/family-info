@@ -1,7 +1,6 @@
 <template>
       <header class="header"> 
         <img src="../assets/logo.svg" alt="logo" class="header__logo">
-  
         <nav>
           <router-link to="/form">Форма</router-link>
           <router-link to="/preview">Превью</router-link>
