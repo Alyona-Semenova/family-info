@@ -3,26 +3,31 @@
     <div class="form-view__personal-info">
       <div class="form-view__title">Персональные данные</div>
       <div class="form-view__content">
-        <InputComponent :inputName="'Имя'" :inputValue="user.name" @input="updateName" />
-        <InputComponent :inputName="'Возраст'" :inputValue="user.age" @input="updateAge" />
+        <InputComponent :inputName="'Имя'" :inputValue="userInfo.name" @input="updateName" />
+        <InputComponent :inputName="'Возраст'" :inputValue="userInfo.age" @input="updateAge" />
       </div>
     </div>
 
     <div class="form-view__kids-info">
       <div class="form-view__title form-view__title_with-button">Дети (макс.5) 
-        <button class="kids-info__add-kid"> <img src="@/assets/plus.svg" alt="add-kid" /> Добавить ребенка</button>
+        <button class="kids-info__add-kid"> <img src="@/assets/plus.svg" alt="add-kid" @click="addChild"/> Добавить ребенка</button>
       </div>
       <div class="kids-info__rows">
-        <div class="kids-info__row" v-for="(kid, index) in user.children" :key="index"> 
-          <InputComponent :inputName="'Имя'" :inputValue="kid.name" @input="updateKidName($event, index)" />
-          <InputComponent :inputName="'Возраст'" :inputValue="kid.age" @input="updateKidAge($event, index)" />
-        <div class="kids-info__delete-row"> Удалить </div>
-      </div>
+        <template v-if="Object.values(userInfo.children).length">
+          <div class="kids-info__row" v-for="(kid, index) in userInfo.children" :key="index"> 
+            <InputComponent :inputName="'Имя'" :inputValue="kid.name" @input="updateKidName($event, index)" />
+            <InputComponent :inputName="'Возраст'" :inputValue="kid.age" @input="updateKidAge($event, index)" />
+            <div class="kids-info__delete-row" @click="removeChild(index)"> Удалить </div>
+          </div>
+        </template>
+        <template v-else>
+          <div class="kids-info__row_empty"> <i>Пусто</i> </div>
+        </template>
     </div>
     </div>
 
     <div class="form-view__save-info">
-      <button class="form-view__save-button">Сохранить</button>
+      <button class="form-view__save-button" @click="save">Сохранить</button>
     </div>
   </div>
 </template>
@@ -38,24 +43,20 @@ export default {
 
   data() {
     return {
-      user: {
-        name: 'Петр',
-        age: 99,
-        children: {
-          1: {
-            id: 1,
-            name: 'Вася',
-            age: 10,
-          },
-          2: {
-            id: 2,
-            name: 'Маша',
-            age: 14,
-          },
-        }
-      }
+      userInfo: {},
     }
   },
+
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    }
+  },
+
+  created() {
+    this.userInfo = structuredClone(this.user);
+  },
+
 
   methods: {
     /**
@@ -63,7 +64,7 @@ export default {
      * @param {string} value - новое значение имени
      */
     updateName(value) {
-      this.user.name = value;
+      this.userInfo.name = value;
     },
 
     /**
@@ -71,7 +72,7 @@ export default {
      * @param {string} value - новое значение возраста
      */
     updateAge(value) {
-      this.user.age = Number(value);
+      this.userInfo.age = Number(value);
     },
     
     /**
@@ -80,7 +81,7 @@ export default {
      * @param {number} index - ключ
      */
     updateKidName(value, index) {
-      this.user.children[index].name = value;
+      this.userInfo.children[index].name = value;
     },
 
     /**
@@ -89,8 +90,43 @@ export default {
      * @param {number} index - ключ
      */
     updateKidAge(value, index) {
-      this.user.children[index].age = Number(value);
+      this.userInfo.children[index].age = Number(value);
     },
+    
+    /**
+     * Добавление нового ребенка
+     */
+    addChild() {
+      if (Object.values(this.userInfo.children).length >= 5) {
+        alert ('Максимальное количество детей - 5');
+        return;
+      }
+
+      const children = this.userInfo.children || {};
+      const lastChildId = Math.max(0, ...Object.keys(children).map(Number)); 
+      let newChild = {
+          id: lastChildId ? lastChildId + 1 : 1,
+          name: '',
+          age: '',
+      };
+
+      this.$set(this.userInfo.children, newChild.id, newChild);
+    },
+
+    /**
+     * Удаление ребенка
+     */
+    removeChild(childId) {
+      this.$delete(this.userInfo.children, childId);
+    },
+
+    /**
+     * Сохранение данных
+     */
+    save() {
+      this.$store.commit('UPDATE_USER', this.userInfo);
+    }
+
   }
 }
 </script>
@@ -136,6 +172,13 @@ export default {
       align-items: center;
       gap: 18px;
 
+      &_empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: lightgray;
+
+      }
 
       & > * {
         flex: 5;
